@@ -1,0 +1,25 @@
+{
+  "name": "bilchuck-rxjs",
+  "version": "0.0.1",
+  "description": "RxJS like library",
+  "main": "src/lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha './src/test/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bilchuck/my-rxjs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bilchuck/my-rxjs/issues"
+  },
+  "homepage": "https://github.com/Bilchuck/my-rxjs#readme",
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  }
+}
