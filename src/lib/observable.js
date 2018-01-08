@@ -26,11 +26,7 @@ const create = observer => {
     return observable;
 };
 
-const fromArray = array => create(({
-    next,
-    complete,
-    error
-}) => compose(complete, forEach(next))(array));
+const fromArray = array => create(({next, complete, error}) => compose(complete, forEach(next))(array));
 
 const interval = mseconds => {
     let interval;
@@ -47,7 +43,7 @@ const interval = mseconds => {
 
 const fromEvent = curry((event, subject) => {
     const fn = x => next(x);
-    const observable = create(({next, error, complete}) => 
+    const observable = create(({next}) => 
         subject.addEventListener(event, fn)
     );
     observable.unsubscribe = () => subject.removeEventListener(event, fn);
@@ -56,21 +52,13 @@ const fromEvent = curry((event, subject) => {
 
 // operators
 const map = curry((fn, observable) =>
-    create(({
-            next,
-            error,
-            complete
-        }) =>
+    create(({next, error, complete}) =>
         observable.subscribe(x => next(fn(x)), errorData => error(errorData), () => complete())
     )
 );
 
 const filter = curry((fn, observable) =>
-    create(({
-            next,
-            error,
-            complete
-        }) =>
+    create(({next, error, complete}) =>
         observable.subscribe(x => fn(x) ? next(x) : null, errorData => error(errorData), () => complete())
     )
 );
