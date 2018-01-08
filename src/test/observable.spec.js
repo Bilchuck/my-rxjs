@@ -69,13 +69,13 @@ describe("Observable", () => {
             deepEqual(res, [10]);
         });
     });
-    describe("interval method", () => {
+    describe("interval method", (done) => {
         it("should create stream that every x miliseconds return iterator number", (done) => {
             const res = [];
             setTimeout(() => {
                 deepEqual(res, [1, 2, 3]);
                 done();
-            }, 4000);
+            }, 1500);
             Observable.interval(1000).takeUntil(x => x > 3).subscribe(x => res.push(x));
         });
     });
