@@ -1,6 +1,6 @@
 {
   "name": "bilchuck-rxjs",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "RxJS like library",
   "main": "src/index.js",
   "directories": {
