@@ -42,9 +42,9 @@ const interval = mseconds => {
 };
 
 const fromEvent = curry((event, subject) => {
-    const fn = x => next(x);
+    const fn = (next, x) => next(x);
     const observable = create(({next}) => 
-        subject.addEventListener(event, fn)
+        subject.addEventListener(event, data => fn(next, data))
     );
     observable.unsubscribe = () => subject.removeEventListener(event, fn);
     return observable;
