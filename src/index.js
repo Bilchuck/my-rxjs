@@ -4,6 +4,7 @@ const {
     fromArray,
     filter,
     interval,
+    fromEvent,
 } = require("./lib/observable");
 
 module.exports = {
@@ -12,4 +13,5 @@ module.exports = {
     fromArray,
     filter,
     interval,
+    fromEvent,
 };

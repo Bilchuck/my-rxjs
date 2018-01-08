@@ -116,4 +116,5 @@ module.exports = {
     fromArray,
     filter,
     interval,
+    fromEvent,
 };
