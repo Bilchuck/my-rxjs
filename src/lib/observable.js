@@ -26,6 +26,35 @@ const create = observer => {
     return observable;
 };
 
+const fromArray = array => create(({
+    next,
+    complete,
+    error
+}) => compose(complete, forEach(next))(array));
+
+const interval = mseconds => {
+    let interval;
+    let iterator = 0;
+    const observable = create(({next}) => {
+        interval = setInterval(() => {
+            iterator = iterator + 1;
+            next(iterator);
+        });
+    });
+    observable.unsubscribe = () => clearInterval(interval);
+    return observable;
+};
+
+const fromEvent = curry((event, subject) => {
+    const fn = x => next(x);
+    const observable = create(({next, error, complete}) => 
+        subject.addEventListener(event, fn)
+    );
+    observable.unsubscribe = () => subject.removeEventListener(event, fn);
+    return observable;
+});
+
+// operators
 const map = curry((fn, observable) =>
     create(({
             next,
@@ -46,26 +75,8 @@ const filter = curry((fn, observable) =>
     )
 );
 
-const fromArray = array => create(({
-    next,
-    complete,
-    error
-}) => compose(complete, forEach(next))(array));
-const fromPromise = promise => create(
-    ({
-        next,
-        complete,
-        error
-    }) =>
-    promise.then(x => compose(complete, next)(x)).catch(error)
-);
-
 const takeUntil = curry((fn, observable) =>
-    create(({
-        next,
-        error,
-        complete
-    }) => {
+    create(({next, error, complete}) => {
         let stopped = false;
         observable.subscribe(
             x => {
@@ -74,27 +85,6 @@ const takeUntil = curry((fn, observable) =>
                     observable.unsubscribe();
                 } else {
                     next(x);
-                }
-            },
-            errorData => error(errorData),
-            () => complete(),
-        );
-    })
-);
-const takeWhile = curry((fn, observable) =>
-    create(({
-        next,
-        error,
-        complete
-    }) => {
-        let stopped = false;
-        observable.subscribe(
-            x => {
-                if (fn(x)) {
-                    next(x);
-                } else {
-                    complete();
-                    observable.unsubscribe();
                 }
             },
             errorData => error(errorData),
@@ -103,18 +93,23 @@ const takeWhile = curry((fn, observable) =>
     })
 );
 
-const interval = mseconds => {
-    let interval;
-    let iterator = 0;
-    const observable = create(({next}) => {
-        interval = setInterval(() => {
-            iterator = iterator + 1;
-            next(iterator);
-        });
-    });
-    observable.unsubscribe = () => clearInterval(interval);
-    return observable;
-};
+const takeWhile = curry((fn, observable) =>
+    create(({next, error, complete}) => {
+        let stopped = false;
+        observable.subscribe(
+            x => {
+                if (fn(x)) {
+                    next(x);
+                } else {
+                    complete();
+                    observable.unsubscribe();
+                }
+            },
+            errorData => error(errorData),
+            () => complete(),
+        );
+    })
+);
 
 const flatMap = curry((fn, observable) =>
     create(({next, error, complete}) => {
