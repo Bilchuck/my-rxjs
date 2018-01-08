@@ -51,13 +51,16 @@ describe("Observable", () => {
             deepEqual(start, end);
         });
     });
-    describe("takeUntil method", () => {
-        it("should continue stream until expression is true", () => {
+    describe("takeUntil method", (done) => {
+        it("should continue stream until observable is triggered", (done) => {
             const res = [];
-            const stream = bigNumbersStream
-                            .takeUntil(x => x > 50)
-                            .subscribe(x => res.push(x));
-            deepEqual(res, [10]);
+            const stream = Observable.interval(100).takeUntil(Observable.interval(1000));
+            stream.subscribe(x => res.push(x));
+            setTimeout(() => {
+                deepEqual(res, [1,2,3,4,5,6,7,8,9]);
+                stream.unsubscribe();
+                done();
+            }, 1200)
         });
     });
     describe("takeWhile method", () => {
@@ -72,11 +75,13 @@ describe("Observable", () => {
     describe("interval method", (done) => {
         it("should create stream that every x miliseconds return iterator number", (done) => {
             const res = [];
+            const stream = Observable.interval(1000).takeWhile(x => x <= 3);
+            stream.subscribe(x => res.push(x));
             setTimeout(() => {
-                deepEqual(res, [1, 2, 3]);
+                deepEqual(res, [1]);
+                stream.unsubscribe();
                 done();
             }, 1500);
-            Observable.interval(1000).takeUntil(x => x > 3).subscribe(x => res.push(x));
         });
     });
     describe("flatMap method", (done) => {

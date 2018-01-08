@@ -35,7 +35,7 @@ const interval = mseconds => {
         interval = setInterval(() => {
             iterator = iterator + 1;
             next(iterator);
-        });
+        }, mseconds);
     });
     observable.unsubscribe = () => clearInterval(interval);
     return observable;
@@ -63,17 +63,23 @@ const filter = curry((fn, observable) =>
     )
 );
 
-const takeUntil = curry((fn, observable) =>
+const takeUntil = curry((observable1, observable2) =>
     create(({next, error, complete}) => {
-        let stopped = false;
-        observable.subscribe(
+        const finish = () => {
+            observable1.unsubscribe();
+            observable2.unsubscribe();
+            complete();
+        }
+        const _1 = observable1.subscribe(
+            () => {
+                finish();
+            },
+            errorData => error(errorData),
+            finish,
+        );
+        const _2 = observable2.subscribe(
             x => {
-                if (fn(x)) {
-                    complete();
-                    observable.unsubscribe();
-                } else {
-                    next(x);
-                }
+                next(x)
             },
             errorData => error(errorData),
             () => complete(),
