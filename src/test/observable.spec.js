@@ -79,14 +79,11 @@ describe("Observable", () => {
             Observable.interval(1000).takeUntil(x => x > 3).subscribe(x => res.push(x));
         });
     });
-    describe("flatMap method", () => {
-        it("should replace current stream with another one", (done) => {
+    describe("flatMap method", (done) => {
+        it("should replace current stream with another one", () => {
             const res = [];
-            setTimeout(() => {
-                deepEqual(res, [10]);
-                done();
-            }, 1500);
-            Observable.interval(1000).flatMap(x => bigNumbersStream).takeWhile(x => x < 90).subscribe(x => res.push(x));
+            smallNumbersStream.flatMap(x => bigNumbersStream).takeWhile(x => x < 90).subscribe(x => res.push(x));
+            deepEqual(res, [10]);
         });
     });
 });
