@@ -13,7 +13,7 @@ const create = observer => {
             observer({
                 next: data => subscribed ? onNext(data) : null,
                 error: errorData => onError(errorData),
-                complete: data => onComplete && subscribed ? onComplete(complete) : null,
+                complete: data => onComplete && subscribed ? onComplete() : null,
             });
         },
         unsubscribe: () => subscribed = false,
