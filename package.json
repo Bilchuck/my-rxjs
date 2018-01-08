@@ -21,5 +21,9 @@
   "homepage": "https://github.com/Bilchuck/my-rxjs#readme",
   "devDependencies": {
     "mocha": "^4.0.1"
+  },
+  "dependencies": {
+    "bilchuck-ramda": "0.0.38",
+    "chai": "^4.1.2"
   }
 }
